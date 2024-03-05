@@ -15,10 +15,10 @@ def create():
     except Exception as e:
         return f"Error: {e}",400
 
-# @userAPI.route('/list')
-# def read():
-#     try:
-#         all_users = [doc.to_dict() for doc in user_Ref.stream()]
-#         return jsonify(all_users),200
-#     except Exception as e:
-#         return f"Error: {e}"
+@userAPI.route('/list')
+def read():
+    try:
+        all_users = [doc.to_dict() for doc in user_Ref.stream()]
+        return jsonify(all_users),200
+    except Exception as e:
+        return f"Error: {e}"
