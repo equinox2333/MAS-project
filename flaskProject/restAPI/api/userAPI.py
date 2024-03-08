@@ -43,7 +43,7 @@ def create():
         # Save study plan to database
         id = uuid.uuid4().hex
         user_Ref.document(id).set({"output": study_plan, "user_input":goal})
-        return jsonify({"success": True, "study_plan_id": id}), 200
+        return jsonify({"success": True, "study_plan_id": id, "study_plan": study_plan}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
