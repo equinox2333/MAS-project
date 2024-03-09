@@ -9,6 +9,7 @@ import Modal from 'react-native-modal';
 // import {CalendarList, DatePicker} from "react-native-common-date-picker";
 
 import {formateDate} from "../../utils/common";
+import axios from 'axios';
 
 
 const styles = StyleSheet.create({
@@ -77,9 +78,11 @@ const styles = StyleSheet.create({
 
 const AddTask = () => {
   const [title, setTitle] = useState("");
+  const [tag, setTag] = useState("");
+  const [repeat, setRepeat] = useState("");
   const [content, setContent] = useState("");
 // 用于控制组件显示/隐藏的state
-  const [isDateShow, setIsDateShow] = useState(false);
+  const [isDateShow, setIsDateShow] = useState(true);
   const handleSubmit = async () => {
     try {
       //   TODO: send to backend
@@ -98,7 +101,8 @@ const AddTask = () => {
   const [beginDate, setBeginDate] = useState(formateDate(new Date()));
   const [endDate, setEndDate] = useState(formateDate(new Date()));
 
-  const [remindingTime, setRemindingTime] = useState(formateDate(new Date()));
+  // const [remindingTime, setRemindingTime] = useState(formateDate(new Date()));
+  const [remindingTime, setRemindingTime] = useState(new Date());
 
   let startDate = useRef(formateDate(new Date()))
 
@@ -115,7 +119,8 @@ const AddTask = () => {
     if (dateFlag.current === dateFlagList[1]) {
       setEndDate(formateDate(selectedDate))
     }
-    setIsDateShow(false)
+    // setIsDateShow(false)
+    setRemindingTime(selectedDate)
   };
 
   // 日期选择器选择
@@ -132,13 +137,13 @@ const AddTask = () => {
   return (
     <>
       {/*TODO: 日历组件*/}
-      {isDateShow && <DateTimePicker
+      {/* {isDateShow && <DateTimePicker
         value={new Date()}
         mode="date"
         is24Hour={true}
         display="default"
         onChange={onChange}
-      />}
+      />} */}
       {/*<Modal*/}
       {/*  isVisible={isDateShow}*/}
       {/*  animationType={'fade'}*/}
@@ -187,35 +192,49 @@ const AddTask = () => {
           />
         </View>
 
-        <View style={{flexDirection: "row", ...styles.formItem}}>
+        {/* <View style={{flexDirection: "row", ...styles.formItem}}>
 
-          <Text style={[styles.formItemLable]}>Time:</Text>
-          <TouchableOpacity onPress={() => {
+          <Text style={[styles.formItemLable]}>Time:</Text> */}
+          {/* <TouchableOpacity onPress={() => {
             setIsDateShow(true)
             dateFlag = dateFlagList[0]
-          }}>
-            <Text> {beginDate}</Text>
-          </TouchableOpacity>
-          <Text style={{marginLeft: 15, marginRight: 15}}>to</Text>
-          <TouchableOpacity onPress={() => {
+          }}> */}
+            {/* {isDateShow && <DateTimePicker
+        value={new Date()}
+        mode="date"
+        is24Hour={true}
+        display="default"
+        onChange={onChange}
+      />} */}
+            {/* <Text> {beginDate}</Text> */}
+          {/* </TouchableOpacity> */}
+          {/* <Text style={{marginLeft: 15, marginRight: 15}}>to</Text> */}
+          {/* <TouchableOpacity onPress={() => {
             setIsDateShow(true)
             dateFlag = dateFlagList[1]
           }}>
             <Text> {endDate}</Text>
-          </TouchableOpacity>
-        </View>
+          </TouchableOpacity> */}
+          {/* {isDateShow && <DateTimePicker
+        value={new Date()}
+        mode="date"
+        is24Hour={true}
+        display="default"
+        onChange={onChange}
+      />}
+        </View> */}
 
         <View style={{flexDirection: "row", alignItems: "center", ...styles.formItem}}>
           <Text style={styles.formItemLable}>Tag:</Text>
           <TextInput
             style={{...styles.input, ...styles.formItemValue}}
             value={title}
-            onChangeText={setTitle}
-            placeholder="Enter title"
+            onChangeText={setTag}
+            placeholder="Add Tags"
           />
         </View>
 
-        <View style={{flexDirection: "row", alignItems: "center", ...styles.formItem}}>
+        {/* <View style={{flexDirection: "row", alignItems: "center", ...styles.formItem}}>
           <Text style={styles.formItemLable}>Repeat:</Text>
           <TextInput
             style={{...styles.input, ...styles.formItemValue}}
@@ -223,17 +242,24 @@ const AddTask = () => {
             onChangeText={setTitle}
             placeholder="Enter title"
           />
-        </View>
+        </View> */}
 
         <View style={{flexDirection: "row", alignItems: "center", ...styles.formItem}}>
           <Text style={[styles.formItemLable, {width: 180}]}>Reminding Time:</Text>
-          <TouchableOpacity onPress={() => {
+          {/* <TouchableOpacity onPress={() => {
             setIsDateShow(true)
           }}>
             <Text>{remindingTime}</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
+          {isDateShow && <DateTimePicker
+        value={remindingTime}
+        mode="date"
+        is24Hour={true}
+        display="default"
+        onChange={onChange}
+      />}
         </View>
-
+{/* 
         <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
           <TouchableOpacity onPress={() => {
           }}>
@@ -243,18 +269,35 @@ const AddTask = () => {
           }}>
             <Text style={{alignItems: 'center', justifyContent: 'center', display: "flex", height: '100%'}}> AI *</Text>
           </TouchableOpacity>
-        </View>
-
+        </View> */}
 
         <View style={{position: 'relative', marginTop: 10}}>
           <TextInput
             style={[styles.input, styles.textArea,]}
             value={content}
             onChangeText={setContent}
-            placeholder="Free Text"
+            placeholder="Content"
             multiline
           />
           <TouchableOpacity onPress={() => {
+            // axios.post('http://127.0.0.1:5000/user/add',
+            fetch('http://127.0.0.1:5000/user/add', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*',
+                'Host': '0.0.0.0',
+                'Accept': '*/*'
+            },
+            body: {
+             "goal": {content}
+            }
+          })
+            .then(res => console.log(res))
+            .catch((error) => {
+              console.error(error);
+           });
+           console.log("pressed")
           }} style={{
             position: 'absolute',
             top: 5,
@@ -268,7 +311,7 @@ const AddTask = () => {
             fontSize: 14
           }}>
             <Text>
-              Extract
+              Submit
             </Text>
           </TouchableOpacity>
         </View>

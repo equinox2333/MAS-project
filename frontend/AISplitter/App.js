@@ -19,7 +19,7 @@ export default function App() {
       {/* <StatusBar style='auto' /> */}
       <Stack.Navigator>
         <Stack.Screen
-          name="temp"
+          name="home"
           options={{
             title: "HOME",
             headerStyle: {
@@ -31,6 +31,20 @@ export default function App() {
             },
           }}
           component={HomeStack}>
+        </Stack.Screen>
+        <Stack.Screen
+          name="createtask"
+          options={{
+            title: "Create Task",
+            headerStyle: {
+              backgroundColor: "black",
+            },
+            headerTintColor: "white",
+            headerTitleStyle: {
+              fontWeight: "bold",
+            },
+          }}
+          component={CreateTask}>
         </Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>
