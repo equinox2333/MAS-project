@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify
 from firebase_admin import firestore
 import uuid
 import os
+import pyrebase
 from dotenv import load_dotenv
 from openai import OpenAI
 
@@ -54,3 +55,42 @@ def read():
         return jsonify(all_users),200
     except Exception as e:
         return f"Error: {e}"
+
+
+#new parts that integrate authentication
+app = Flask(__name__)
+config = {
+  'apiKey': "AIzaSyBtlZjqrSV20C3-5aS73fhSFaf1fI8YY9Y",
+  'authDomain': "flask-test-a9df8.firebaseapp.com",
+  'databaseURL': "https://flask-test-a9df8-default-rtdb.firebaseio.com",
+  'projectId': "flask-test-a9df8",
+  'storageBucket': "flask-test-a9df8.appspot.com",
+  'messagingSenderId': "442349353641",
+  'appId': "1:442349353641:web:112bf48c7cd058427187b8",
+  'measurementId': "G-KY4CF8ER8W",
+    'databaseURL': ''
+}
+
+firebase = pyrebase.initialize_app(config)
+auth = firebase.auth()
+
+app.secret_key = 'secret'
+@app.route('/login', methods=['POST','GET'])
+def index():
+    if ('user' in session):
+        return 'Hi, {}'.format(session['user'])
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+        try:
+            user = auth.sign_in_with_email_and_password(email, password)
+            session['user'] = email
+        except:
+            return 'Failed to log in'
+    return jsonify({"success": True}), 200
+    # return render_template('home.html')
+
+@app.route('/logout')
+def logout():
+    session.pop('user')
+    return redirect('/')
