@@ -5,8 +5,11 @@ import os
 import pyrebase
 from dotenv import load_dotenv
 from openai import OpenAI
+from datetime import datetime
 
 load_dotenv()
+
+
 
 db = firestore.client()
 user_Ref = db.collection('user')
@@ -43,7 +46,12 @@ def create():
         study_plan = generate_study_plan(goal)
         # Save study plan to database
         id = uuid.uuid4().hex
-        user_Ref.document(id).set({"output": study_plan, "user_input":goal})
+        user_Ref.document(id).set({"output": study_plan, 
+                                   "user_input":goal,
+                                   "createTime":datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+                                   
+                                   
+                                   })
         return jsonify({"success": True, "study_plan_id": id, "study_plan": study_plan}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 400
