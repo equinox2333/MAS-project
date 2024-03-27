@@ -134,6 +134,8 @@ const AddTask = () => {
     }
   }
 
+
+
   return (
     <>
       {/*TODO: 日历组件*/}
@@ -280,24 +282,28 @@ const AddTask = () => {
             multiline
           />
           <TouchableOpacity onPress={() => {
-            // axios.post('http://127.0.0.1:5000/user/add',
-            fetch('http://127.0.0.1:5000/user/add', {
-            method: 'POST',
+            fetch('http://127.0.0.1:5000/user/generate_study_plan/run10km', { 
             headers: {
                 'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*',
-                'Host': '0.0.0.0',
-                'Accept': '*/*'
-            },
-            body: {
-             "goal": {content}
-            }
-          })
-            .then(res => console.log(res))
-            .catch((error) => {
-              console.error(error);
-           });
-           console.log("pressed")
+                'Accept': 'application/json',
+              }  
+            })
+            .then(response => {
+              // Check if the response is successful
+              if (!response.ok) {
+                throw new Error('Network response was not ok');
+              }
+              // Parse the response as JSON
+              return response.json();
+            })
+            .then(data => {
+              // Log the fetched data to the console
+              console.log(data);
+            })
+            .catch(error => {
+              // Log any errors to the console
+              console.error('Error:', error);
+            });
           }} style={{
             position: 'absolute',
             top: 5,
@@ -321,5 +327,7 @@ const AddTask = () => {
   )
     ;
 };
+
+
 
 export default AddTask;

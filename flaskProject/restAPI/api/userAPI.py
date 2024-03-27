@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify, Flask, session, redirect, render_template
 from firebase_admin import firestore
+from flask_cors import CORS
 import uuid
 import os
 import pyrebase
@@ -19,6 +20,9 @@ client = OpenAI(api_key=openai_api_key)
 
 userAPI = Blueprint('userAPI', __name__)
 
+app = Flask(__name__)
+CORS(app)
+
 def generate_study_plan(goal):
     try:
         # Generate the study plan using OpenAI
@@ -34,7 +38,10 @@ def generate_study_plan(goal):
     except Exception as e:
         return f"Error generating study plan: {e}"
 
-
+@userAPI.route('/generate_study_plan/<goal>', methods=['GET'])
+def get_study_plan(goal):
+    study_plan = generate_study_plan(goal)
+    return jsonify({'study_plan': study_plan})
 
 
 @userAPI.route('/add',methods=['POST'])
@@ -66,7 +73,8 @@ def read():
 
 
 #new parts that integrate authentication
-app = Flask(__name__)
+
+
 config = {
   'apiKey': "AIzaSyBtlZjqrSV20C3-5aS73fhSFaf1fI8YY9Y",
   'authDomain': "flask-test-a9df8.firebaseapp.com",
