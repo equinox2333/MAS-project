@@ -48,9 +48,8 @@ def create():
         id = uuid.uuid4().hex
         user_Ref.document(id).set({"output": study_plan, 
                                    "user_input":goal,
-                                   "createTime":datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-                                   
-                                   
+                                   "createTime":datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
+                                   "id": id
                                    })
         return jsonify({"success": True, "study_plan_id": id, "study_plan": study_plan}), 200
     except Exception as e:
