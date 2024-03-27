@@ -282,41 +282,39 @@ const AddTask = () => {
             multiline
           />
           <TouchableOpacity onPress={() => {
-            fetch('http://127.0.0.1:5000/user/generate_study_plan/run10km', { 
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-              }  
-            })
-            .then(response => {
-              // Check if the response is successful
-              if (!response.ok) {
-                throw new Error('Network response was not ok');
-              }
-              // Parse the response as JSON
-              return response.json();
-            })
-            .then(data => {
-              // Log the fetched data to the console
-              console.log(data);
-            })
-            .catch(error => {
-              // Log any errors to the console
-              console.error('Error:', error);
-            });
+            // fetch('http://127.0.0.1:5000/user/generate_study_plan/run10km', { 
+            // headers: {
+            //     'Content-Type': 'application/json',
+            //     'Accept': 'application/json',
+            //   }  
+            // })
+            // .then(response => {
+            //   // Check if the response is successful
+            //   if (!response.ok) {
+            //     throw new Error('Network response was not ok');
+            //   }
+            //   // Parse the response as JSON
+            //   return response.json();
+            // })
+            // .then(data => {
+            //   // Log the fetched data to the console
+            //   console.log(data);
+            // })
+            // .catch(error => {
+            //   // Log any errors to the console
+            //   console.error('Error:', error);
+            // });
 
             //old code that needs to be integrated
             fetch('http://127.0.0.1:5000/user/add', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*',
-                'Host': '0.0.0.0',
-                'Accept': '*/*'
+                'Accept': 'application/json'
             },
-            body: {
-             "goal": {content}
-            }
+            body: JSON.stringify({
+             "goal": content
+            })
           })
             .then(res => console.log(res))
             .catch((error) => {
