@@ -26,9 +26,10 @@ def generate_study_plan(goal):
             model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": "You are a study assistant, skilled in breaking down goals into actionable tasks."},
-                {"role": "user", "content": f"What are the steps I should take to {goal}?"}
+                {"role": "user", "content": f"What are the steps I should take to {goal}? Give me just a numbered list of different tasks I can do to accomplish this goal"}
             ]
         )
+        print(completion.choices[0].message.content)
         return completion.choices[0].message.content
     except Exception as e:
         return f"Error generating study plan: {e}"
@@ -48,8 +49,9 @@ def create():
         id = uuid.uuid4().hex
         user_Ref.document(id).set({"output": study_plan, 
                                    "user_input":goal,
-                                   "createTime":datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
-                                   "id": id
+                                   "createTime":datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+                                   
+                                   
                                    })
         return jsonify({"success": True, "study_plan_id": id, "study_plan": study_plan}), 200
     except Exception as e:
