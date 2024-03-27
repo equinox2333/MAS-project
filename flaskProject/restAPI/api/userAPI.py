@@ -26,9 +26,10 @@ def generate_study_plan(goal):
             model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": "You are a study assistant, skilled in breaking down goals into actionable tasks."},
-                {"role": "user", "content": f"What are the steps I should take to {goal}?"}
+                {"role": "user", "content": f"What are the steps I should take to {goal}? Give me just a numbered list of different tasks I can do to accomplish this goal"}
             ]
         )
+        print(completion.choices[0].message.content)
         return completion.choices[0].message.content
     except Exception as e:
         return f"Error generating study plan: {e}"
