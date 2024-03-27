@@ -304,6 +304,25 @@ const AddTask = () => {
               // Log any errors to the console
               console.error('Error:', error);
             });
+
+            //old code that needs to be integrated
+            fetch('http://127.0.0.1:5000/user/add', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*',
+                'Host': '0.0.0.0',
+                'Accept': '*/*'
+            },
+            body: {
+             "goal": {content}
+            }
+          })
+            .then(res => console.log(res))
+            .catch((error) => {
+              console.error(error);
+           });
+
           }} style={{
             position: 'absolute',
             top: 5,
