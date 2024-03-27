@@ -313,10 +313,10 @@ const AddTask = () => {
                 'Accept': 'application/json'
             },
             body: JSON.stringify({
-             "goal": content
+             "goal": {content}
             })
           })
-            .then(res => console.log(res))
+            .then(res => console.log(res.json()))
             .catch((error) => {
               console.error(error);
            });
