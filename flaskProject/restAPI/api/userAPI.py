@@ -76,6 +76,7 @@ auth = firebase.auth()
 
 app.secret_key = 'secret'
 @app.route('/login', methods=['POST','GET'])
+
 def index():
     if ('user' in session):
         return 'Hi, {}'.format(session['user'])
