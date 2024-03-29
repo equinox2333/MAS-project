@@ -1,10 +1,3 @@
-import { PriorityEnum } from '@/constants';
-import type { NavigationProp, TaskItem } from '@/types';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from '@react-navigation/native';
-import { Button, CheckBox, Input, useTheme } from '@rneui/themed';
-import dayjs from 'dayjs';
-import { auth, db } from '@/config/firebase';
 import React, { useEffect, useMemo, useState } from 'react';
 import {
   Keyboard,
@@ -16,8 +9,17 @@ import {
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
+import dayjs from 'dayjs';
+import { useNavigation } from '@react-navigation/native';
+import { Button, CheckBox, Input, useTheme } from '@rneui/themed';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import { auth, db } from '@/config/firebase';
+import { PriorityEnum } from '@/constants';
 import { logout } from '@/services/user';
+
+import type { NavigationProp, TaskItem } from '@/types';
 
 interface Route {
   params: {

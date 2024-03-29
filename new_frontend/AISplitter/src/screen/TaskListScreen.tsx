@@ -1,9 +1,3 @@
-import Empty from '@/components/Empty';
-import type { NavigationProp, TaskItem } from '@/types';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import { Button, CheckBox } from '@rneui/themed';
-import dayjs from 'dayjs';
 import { useCallback, useEffect, useState } from 'react';
 import {
   Keyboard,
@@ -14,14 +8,22 @@ import {
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
+import dayjs from 'dayjs';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { Button, CheckBox } from '@rneui/themed';
 import { SwipeListView } from 'react-native-swipe-list-view';
+
+import Empty from '@/components/Empty';
+
+import type { NavigationProp, TaskItem } from '@/types';
 
 interface Data {
   item: TaskItem;
 }
 
 export default function TaskListScreen() {
-  const navigation = useNavigation<NavigationProp<'TaskListScreen'>>();
+  const navigation = useNavigation<NavigationProp<'TaskList'>>();
   const [taskList, setTaskList] = useState([] as TaskItem[]);
 
   const handleRefresh = useCallback(async () => {
@@ -94,7 +96,7 @@ export default function TaskListScreen() {
 
   const handleEdit = (rowMap: object, data: TaskItem) => {
     handleClose(rowMap, data.id);
-    navigation.navigate('AddTaskScreen', { task: data });
+    navigation.navigate('AddTask', { task: data });
   };
 
   const renderHiddenItem = (data: Data, rowMap: object) => {
@@ -136,7 +138,7 @@ export default function TaskListScreen() {
             previewOpenDelay={3000}
           />
           <View style={styles.footer}>
-            <Button title="Add Task" onPress={() => navigation.navigate('AddTaskScreen')} />
+            <Button title="Add Task" onPress={() => navigation.navigate('AddTask')} />
           </View>
         </View>
       </TouchableWithoutFeedback>

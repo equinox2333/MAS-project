@@ -1,11 +1,13 @@
 import {
   createUserWithEmailAndPassword,
-  updateProfile,
-  signOut,
   signInWithEmailAndPassword,
+  signOut,
+  updateProfile,
 } from 'firebase/auth';
+import { addDoc, collection } from 'firebase/firestore';
+
 import { auth, db } from '@/config/firebase';
-import { collection, addDoc } from 'firebase/firestore';
+
 import type { LoginParams, RegisterParams } from '@/types/user';
 
 export async function register(params: RegisterParams) {

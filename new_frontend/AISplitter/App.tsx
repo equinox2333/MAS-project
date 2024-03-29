@@ -1,21 +1,38 @@
-import AddTaskScreen from '@/screen/AddTaskScreen';
-import LoginScreen from '@/screen/LoginScreen';
-import RegisterScreen from '@/screen/RegisterScreen';
-import TaskListScreen from '@/screen/TaskListScreen';
+import { useEffect, useState } from 'react';
+import { ActivityIndicator } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { ThemeProvider, createTheme } from '@rneui/themed';
-
+import { auth } from '@/config/firebase';
+import { onAuthStateChanged } from 'firebase/auth';
 import '@/config/firebase';
-import { useCallback, useEffect, useState } from 'react';
-import { verifyTokenValidity } from '@/services/user';
-import { ActivityIndicator } from 'react-native';
+
+import LoginScreen from '@/screen/LoginScreen';
+import RegisterScreen from '@/screen/RegisterScreen';
+import HomeScreen from '@/screen/HomeScreen';
+import AddTaskScreen from '@/screen/AddTaskScreen';
 
 const Stack = createStackNavigator();
 
 export default function App() {
+  const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(
+      auth,
+      (user) => {
+        setIsAuthenticated(!!user);
+        setLoading(false);
+      },
+      (error) => {
+        console.error(error);
+        setLoading(false);
+      },
+    );
+
+    return unsubscribe;
+  }, []);
 
   const theme = createTheme({
     lightColors: {
@@ -45,22 +62,6 @@ export default function App() {
     mode: 'light',
   });
 
-  const init = useCallback(async () => {
-    try {
-      setLoading(true);
-      const isTokenValid = await verifyTokenValidity();
-      setIsAuthenticated(isTokenValid);
-    } catch (error) {
-      console.error('Error verifying token validity: ', error);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    init();
-  }, [init]);
-
   if (loading) {
     return (
       <ActivityIndicator
@@ -75,23 +76,26 @@ export default function App() {
     <ThemeProvider theme={theme}>
       <NavigationContainer>
         <Stack.Navigator
-          initialRouteName={isAuthenticated ? 'TaskListScreen' : 'LoginScreen'}
+          initialRouteName={isAuthenticated ? 'Home' : 'Login'}
           screenOptions={{
             headerBackTitle: 'Back',
           }}
         >
-          <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
-          <Stack.Screen name="AddTaskScreen" component={AddTaskScreen} />
-          <Stack.Screen
-            name="LoginScreen"
-            component={LoginScreen}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="TaskListScreen"
-            component={TaskListScreen}
-            options={{ headerShown: false }}
-          />
+          {isAuthenticated ? (
+            <>
+              <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
+              <Stack.Screen name="AddTask" component={AddTaskScreen} />
+            </>
+          ) : (
+            <>
+              <Stack.Screen
+                name="Register"
+                component={RegisterScreen}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
+            </>
+          )}
         </Stack.Navigator>
       </NavigationContainer>
     </ThemeProvider>

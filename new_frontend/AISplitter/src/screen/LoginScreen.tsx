@@ -1,8 +1,3 @@
-import { login } from '@/services/user';
-import type { NavigationProp } from '@/types';
-import { useNavigation } from '@react-navigation/native';
-import { Icon } from '@rneui/base';
-import { Button, Input, useTheme } from '@rneui/themed';
 import { useState } from 'react';
 import {
   Keyboard,
@@ -12,23 +7,29 @@ import {
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
+import { Icon } from '@rneui/base';
+import { Button, Input, useTheme } from '@rneui/themed';
+import { useNavigation } from '@react-navigation/native';
+
+import { login } from '@/services/user';
+
+import type { NavigationProp } from '@/types';
 
 export default function LoginScreen() {
   const { theme } = useTheme();
-  const navigation = useNavigation<NavigationProp<'LoginScreen'>>();
+  const navigation = useNavigation<NavigationProp<'Login'>>();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleRegister = () => {
-    navigation.navigate('RegisterScreen');
+    navigation.navigate('Register');
   };
 
   const handleLogin = async () => {
     try {
       setLoading(true);
       await login({ email, password });
-      navigation.navigate('TaskListScreen');
     } catch (error) {
       const errorCode = error.code;
       const errorMessage = error.message;
@@ -85,7 +86,12 @@ export default function LoginScreen() {
             onChangeText={setPassword}
             leftIcon={<Icon name="lock" size={24} />}
           />
-          <Button title="Login" containerStyle={styles.buttonContainer} onPress={handleLogin} />
+          <Button
+            title="Login"
+            loading={loading}
+            containerStyle={styles.buttonContainer}
+            onPress={handleLogin}
+          />
           <Text style={styles.register}>
             Don't have an account?{' '}
             <Text style={styles.registerBtn} onPress={handleRegister}>

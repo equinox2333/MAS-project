@@ -1,5 +1,5 @@
-import type { PriorityEnum } from '@/constants';
 import type { NavigationProp as ReactNavigationProp } from '@react-navigation/native';
+import type { PriorityEnum } from '@/constants';
 
 export interface TaskItem {
   parentId?: string;
@@ -15,10 +15,11 @@ export interface TaskItem {
 }
 
 export type RootStackParamList = {
-  LoginScreen: undefined;
-  RegisterScreen: undefined;
-  AddTaskScreen: { task: TaskItem };
-  TaskListScreen: undefined;
+  Login: undefined;
+  Register: undefined;
+  Home: undefined;
+  AddTask: { task: TaskItem };
+  TaskList: undefined;
 };
 
 export type NavigationProp<T extends keyof RootStackParamList> = ReactNavigationProp<

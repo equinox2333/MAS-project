@@ -1,29 +1,36 @@
-import type { NavigationProp } from '@/types';
+import { useState } from 'react';
+import {
+  Keyboard,
+  Text,
+  TouchableWithoutFeedback,
+  View,
+  SafeAreaView,
+  StyleSheet,
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Icon } from '@rneui/base';
 import { Button, Input, useTheme } from '@rneui/themed';
-import { useState } from 'react';
-import { Keyboard, Text, TouchableWithoutFeedback, View } from 'react-native';
-import { SafeAreaView, StyleSheet } from 'react-native';
+
 import { register } from '@/services/user';
+
+import type { NavigationProp } from '@/types';
 
 export default function RegisterScreen() {
   const { theme } = useTheme();
-  const navigation = useNavigation<NavigationProp<'RegisterScreen'>>();
+  const navigation = useNavigation<NavigationProp<'Register'>>();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleLogin = () => {
-    navigation.navigate('LoginScreen');
+    navigation.navigate('Login');
   };
 
   const handleRegister = async () => {
     try {
       setLoading(true);
       await register({ email, password, username });
-      navigation.navigate('TaskListScreen');
     } catch (error) {
       const errorCode = error.code;
       const errorMessage = error.message;

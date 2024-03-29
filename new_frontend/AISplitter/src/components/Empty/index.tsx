@@ -1,5 +1,6 @@
-import { Icon } from '@rneui/themed';
 import { StyleSheet, Text, View } from 'react-native';
+import { Icon } from '@rneui/themed';
+
 import type { ViewStyle } from 'react-native';
 
 interface EmptyProps {
