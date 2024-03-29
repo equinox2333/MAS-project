@@ -21,8 +21,8 @@ def generate_study_plan(goal):
         completion = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
-                {"role": "system", "content": "You are a study assistant, skilled in breaking down goals into actionable tasks."},
-                {"role": "user", "content": f"What are the steps I should take to {goal}?"}
+                {"role": "system", "content": "You are a productivity assistant, skilled in breaking down goals into actionable tasks with steps about how to complete those tasks."},
+                {"role": "user", "content": f"What are the tasks I should accomplish to complete {goal}? Break it down each task by a title and then a short description about how to complete each task. Do this in list form."}
             ]
         )
         return completion.choices[0].message.content
