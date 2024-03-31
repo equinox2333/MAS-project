@@ -33,7 +33,7 @@ interface Props {
 
 export default function AddTaskScreen(props: Props) {
   const { params } = props.route;
-  const navigation = useNavigation<NavigationProp<'AddTaskScreen'>>();
+  const navigation = useNavigation<NavigationProp<'AddTask'>>();
   const { theme } = useTheme();
   const [task, setTask] = useState<TaskItem>(
     params?.task || ({ priority: PriorityEnum.Medium } as TaskItem),
@@ -69,9 +69,20 @@ export default function AddTaskScreen(props: Props) {
 
   const handleAddTask = async () => {
     try {
-      await logout();
-      const res = await auth.currentUser.getIdToken(true);
-      console.debug('%c Line:69 🌮 res', 'color:#93c0a4', res);
+      // await logout();
+      // const res = await auth.currentUser.getIdToken(true);
+      // console.debug('%c Line:69 🌮 res', 'color:#93c0a4', res);
+      fetch('http://127.0.0.1:5000/user/add', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+             "goal": "test on Wednesday"
+            })
+          })
+          .then(res => console.log(res.json()))
     } catch (error) {
       console.error('Error verifying token validity: ', error);
     }

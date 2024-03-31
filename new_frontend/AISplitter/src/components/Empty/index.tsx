@@ -17,11 +17,11 @@ const Empty = (props: EmptyProps) => {
   switch (type) {
     case 'network_error':
       iconName = 'wifi-off';
-      text = '网络错误，请检查网络后重试';
+      text = 'Network Error, please try again';
       break;
     default:
       iconName = 'inbox';
-      text = '暂无数据';
+      text = 'No Data';
       break;
   }
 
