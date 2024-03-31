@@ -72,17 +72,40 @@ export default function AddTaskScreen(props: Props) {
       // await logout();
       // const res = await auth.currentUser.getIdToken(true);
       // console.debug('%c Line:69 🌮 res', 'color:#93c0a4', res);
-      fetch('http://127.0.0.1:5000/user/add', {
-            method: 'POST',
+      
+    //   fetch('http://127.0.0.1:5000/user/add', {
+    //         method: 'POST',
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //             'Accept': 'application/json'
+    //         },
+    //         body: JSON.stringify({
+    //          "goal": "test on Wednesday"
+    //         })
+    //       })
+    //       .then(async res => await console.log(res.json()))
+    // } catch (error) {
+    //   console.error('Error verifying token validity: ', error);
+    // }
+
+    fetch('http://127.0.0.1:5000/user/generate_study_plan/run10km', { 
             headers: {
                 'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify({
-             "goal": "test on Wednesday"
+                'Accept': 'application/json',
+              }  
             })
-          })
-          .then(res => console.log(res.json()))
+            .then(response => {
+              // Check if the response is successful
+              if (!response.ok) {
+                throw new Error('Network response was not ok');
+              }
+              // Parse the response as JSON
+              return response.json();
+            })
+            .then(data => {
+              // Log the fetched data to the console
+              console.log(data);
+            })
     } catch (error) {
       console.error('Error verifying token validity: ', error);
     }
