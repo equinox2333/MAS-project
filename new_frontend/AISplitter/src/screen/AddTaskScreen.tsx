@@ -31,6 +31,16 @@ interface Props {
   route: Route;
 }
 
+function splitTextIntoTasks(text: string): string[] {
+  // Split the text into an array, using "Task" as the delimiter
+  let tasks = text.split(/Task\s\d+:/).slice(1);
+
+  // // Re-add the "Task" prefix and task number to each task in the array
+  // tasks = tasks.map((task, index) => `Task ${index + 1}: ${task.trim()}`);
+
+  return tasks;
+}
+
 export default function AddTaskScreen(props: Props) {
   const { params } = props.route;
   const navigation = useNavigation<NavigationProp<'AddTask'>>();
@@ -104,7 +114,10 @@ export default function AddTaskScreen(props: Props) {
             })
             .then(data => {
               // Log the fetched data to the console
-              console.log(data);
+              console.log(data.study_plan);
+              // slice tasks into array
+              var tasks = splitTextIntoTasks(data.study_plan)
+              console.log(tasks)
             })
     } catch (error) {
       console.error('Error verifying token validity: ', error);
