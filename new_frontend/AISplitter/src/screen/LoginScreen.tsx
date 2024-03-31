@@ -70,7 +70,9 @@ export default function LoginScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss} style={styles.body}>
+      <TouchableWithoutFeedback 
+      // onPress={Keyboard.dismiss} 
+      style={styles.body}>
         <View>
           <Text style={styles.title}>Login</Text>
           <Input

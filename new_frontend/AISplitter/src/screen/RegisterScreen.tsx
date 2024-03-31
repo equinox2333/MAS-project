@@ -70,7 +70,7 @@ export default function RegisterScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss} style={styles.body}>
+      <TouchableWithoutFeedback style={styles.body}>
         <View>
           <Text style={styles.title}>Register</Text>
           <Input
