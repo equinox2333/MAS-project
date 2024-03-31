@@ -133,7 +133,7 @@ export default function AddTaskScreen(props: Props) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <TouchableWithoutFeedback >
         <View style={styles.body}>
           <ScrollView contentContainerStyle={styles.main}>
             <Text style={styles.label}>Task Title</Text>
