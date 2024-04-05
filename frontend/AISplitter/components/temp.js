@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { StyleSheet, View, TextInput, Button, Text } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import axios from 'axios';
 
 const CreateTask = ({ navigation }) => {
   const [title, setTitle] = useState("");
@@ -9,26 +8,6 @@ const CreateTask = ({ navigation }) => {
   const handleSubmit = async () => {
     try {
       //   TODO: send to backend
-      // fetch('http://127.0.0.1:5000/user/add', {
-      //  method: 'POST',
-      //  body: JSON.stringify({
-      //   "goal": "cook"
-      //  })
-       axios.post('http://127.0.0.1:5000/user/add',
-       JSON.stringify({
-        "goal": "cook"
-       })
-       )
-       .then(res => console.log(res))
-    // })
-    // .then((response) => response.json())
-    // .then((responseJson) => {
-    //    console.log(responseJson);
-       
-    // })
-    .catch((error) => {
-       console.error(error);
-    });
       console.log("task created");
       //   navigation.navigate('');
     } catch (e) {
@@ -43,23 +22,6 @@ const CreateTask = ({ navigation }) => {
     const currentDate = selectedDate || date;
     setDate(currentDate);
   };
-
-//   componentDidMount = () => {
-//     fetch('http://127.0.0.1:5000/user/add', {
-//        method: 'POST',
-//        body: {
-//         "goal": "cook"
-//        }
-//     })
-//     .then((response) => response.json())
-//     .then((responseJson) => {
-//        console.log(responseJson);
-       
-//     })
-//     .catch((error) => {
-//        console.error(error);
-//     });
-//  }
 
   return (
     <View style={styles.container}>

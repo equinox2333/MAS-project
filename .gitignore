@@ -1,2 +1,3 @@
 #test that it is working
 .env
+node_modules

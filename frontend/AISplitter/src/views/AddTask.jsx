@@ -9,7 +9,6 @@ import Modal from 'react-native-modal';
 // import {CalendarList, DatePicker} from "react-native-common-date-picker";
 
 import {formateDate} from "../../utils/common";
-import axios from 'axios';
 
 
 const styles = StyleSheet.create({
@@ -78,11 +77,9 @@ const styles = StyleSheet.create({
 
 const AddTask = () => {
   const [title, setTitle] = useState("");
-  const [tag, setTag] = useState("");
-  const [repeat, setRepeat] = useState("");
   const [content, setContent] = useState("");
 // 用于控制组件显示/隐藏的state
-  const [isDateShow, setIsDateShow] = useState(true);
+  const [isDateShow, setIsDateShow] = useState(false);
   const handleSubmit = async () => {
     try {
       //   TODO: send to backend
@@ -101,8 +98,7 @@ const AddTask = () => {
   const [beginDate, setBeginDate] = useState(formateDate(new Date()));
   const [endDate, setEndDate] = useState(formateDate(new Date()));
 
-  // const [remindingTime, setRemindingTime] = useState(formateDate(new Date()));
-  const [remindingTime, setRemindingTime] = useState(new Date());
+  const [remindingTime, setRemindingTime] = useState(formateDate(new Date()));
 
   let startDate = useRef(formateDate(new Date()))
 
@@ -119,8 +115,7 @@ const AddTask = () => {
     if (dateFlag.current === dateFlagList[1]) {
       setEndDate(formateDate(selectedDate))
     }
-    // setIsDateShow(false)
-    setRemindingTime(selectedDate)
+    setIsDateShow(false)
   };
 
   // 日期选择器选择
@@ -134,18 +129,16 @@ const AddTask = () => {
     }
   }
 
-
-
   return (
     <>
       {/*TODO: 日历组件*/}
-      {/* {isDateShow && <DateTimePicker
+      {isDateShow && <DateTimePicker
         value={new Date()}
         mode="date"
         is24Hour={true}
         display="default"
         onChange={onChange}
-      />} */}
+      />}
       {/*<Modal*/}
       {/*  isVisible={isDateShow}*/}
       {/*  animationType={'fade'}*/}
@@ -194,49 +187,35 @@ const AddTask = () => {
           />
         </View>
 
-        {/* <View style={{flexDirection: "row", ...styles.formItem}}>
+        <View style={{flexDirection: "row", ...styles.formItem}}>
 
-          <Text style={[styles.formItemLable]}>Time:</Text> */}
-          {/* <TouchableOpacity onPress={() => {
+          <Text style={[styles.formItemLable]}>Time:</Text>
+          <TouchableOpacity onPress={() => {
             setIsDateShow(true)
             dateFlag = dateFlagList[0]
-          }}> */}
-            {/* {isDateShow && <DateTimePicker
-        value={new Date()}
-        mode="date"
-        is24Hour={true}
-        display="default"
-        onChange={onChange}
-      />} */}
-            {/* <Text> {beginDate}</Text> */}
-          {/* </TouchableOpacity> */}
-          {/* <Text style={{marginLeft: 15, marginRight: 15}}>to</Text> */}
-          {/* <TouchableOpacity onPress={() => {
+          }}>
+            <Text> {beginDate}</Text>
+          </TouchableOpacity>
+          <Text style={{marginLeft: 15, marginRight: 15}}>to</Text>
+          <TouchableOpacity onPress={() => {
             setIsDateShow(true)
             dateFlag = dateFlagList[1]
           }}>
             <Text> {endDate}</Text>
-          </TouchableOpacity> */}
-          {/* {isDateShow && <DateTimePicker
-        value={new Date()}
-        mode="date"
-        is24Hour={true}
-        display="default"
-        onChange={onChange}
-      />}
-        </View> */}
+          </TouchableOpacity>
+        </View>
 
         <View style={{flexDirection: "row", alignItems: "center", ...styles.formItem}}>
           <Text style={styles.formItemLable}>Tag:</Text>
           <TextInput
             style={{...styles.input, ...styles.formItemValue}}
             value={title}
-            onChangeText={setTag}
-            placeholder="Add Tags"
+            onChangeText={setTitle}
+            placeholder="Enter title"
           />
         </View>
 
-        {/* <View style={{flexDirection: "row", alignItems: "center", ...styles.formItem}}>
+        <View style={{flexDirection: "row", alignItems: "center", ...styles.formItem}}>
           <Text style={styles.formItemLable}>Repeat:</Text>
           <TextInput
             style={{...styles.input, ...styles.formItemValue}}
@@ -244,24 +223,17 @@ const AddTask = () => {
             onChangeText={setTitle}
             placeholder="Enter title"
           />
-        </View> */}
+        </View>
 
         <View style={{flexDirection: "row", alignItems: "center", ...styles.formItem}}>
           <Text style={[styles.formItemLable, {width: 180}]}>Reminding Time:</Text>
-          {/* <TouchableOpacity onPress={() => {
+          <TouchableOpacity onPress={() => {
             setIsDateShow(true)
           }}>
             <Text>{remindingTime}</Text>
-          </TouchableOpacity> */}
-          {isDateShow && <DateTimePicker
-        value={remindingTime}
-        mode="date"
-        is24Hour={true}
-        display="default"
-        onChange={onChange}
-      />}
+          </TouchableOpacity>
         </View>
-{/* 
+
         <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
           <TouchableOpacity onPress={() => {
           }}>
@@ -271,56 +243,18 @@ const AddTask = () => {
           }}>
             <Text style={{alignItems: 'center', justifyContent: 'center', display: "flex", height: '100%'}}> AI *</Text>
           </TouchableOpacity>
-        </View> */}
+        </View>
+
 
         <View style={{position: 'relative', marginTop: 10}}>
           <TextInput
             style={[styles.input, styles.textArea,]}
             value={content}
             onChangeText={setContent}
-            placeholder="Content"
+            placeholder="Free Text"
             multiline
           />
           <TouchableOpacity onPress={() => {
-            // fetch('http://127.0.0.1:5000/user/generate_study_plan/run10km', { 
-            // headers: {
-            //     'Content-Type': 'application/json',
-            //     'Accept': 'application/json',
-            //   }  
-            // })
-            // .then(response => {
-            //   // Check if the response is successful
-            //   if (!response.ok) {
-            //     throw new Error('Network response was not ok');
-            //   }
-            //   // Parse the response as JSON
-            //   return response.json();
-            // })
-            // .then(data => {
-            //   // Log the fetched data to the console
-            //   console.log(data);
-            // })
-            // .catch(error => {
-            //   // Log any errors to the console
-            //   console.error('Error:', error);
-            // });
-
-            //old code that needs to be integrated
-            fetch('http://127.0.0.1:5000/user/add', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify({
-             "goal": {content}
-            })
-          })
-            .then(res => console.log(res.json()))
-            .catch((error) => {
-              console.error(error);
-           });
-
           }} style={{
             position: 'absolute',
             top: 5,
@@ -334,7 +268,7 @@ const AddTask = () => {
             fontSize: 14
           }}>
             <Text>
-              Submit
+              Extract
             </Text>
           </TouchableOpacity>
         </View>
@@ -344,7 +278,5 @@ const AddTask = () => {
   )
     ;
 };
-
-
 
 export default AddTask;

@@ -81,9 +81,7 @@
 
 from flask import Flask, session, request, redirect, render_template
 import pyrebase
-from flask_cors import CORS
 app = Flask(__name__)
-CORS(app)
 config = {
   'apiKey': "AIzaSyBtlZjqrSV20C3-5aS73fhSFaf1fI8YY9Y",
   'authDomain': "flask-test-a9df8.firebaseapp.com",
