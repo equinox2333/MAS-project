@@ -1,11 +1,16 @@
 import { useState } from 'react';
 import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
-import { Button } from '@rneui/themed';
+
+import { Button, Input } from '@rneui/themed';
 
 import { logout } from '@/services/user';
 
 export default function ProfileScreen() {
   const [loading, setLoading] = useState(false);
+  const [edit, setEdit] = useState(false)
+  const [user, setUser] = useState( {username: 'placeholder',
+                                    age: '20',
+                                    gender: 'Female'})
 
   const handleLogout = async () => {
     try {
@@ -18,11 +23,57 @@ export default function ProfileScreen() {
     }
   };
 
+  const handleUserChange = (key: string, value: string) => {
+    setUser((prevUser) => ({ ...prevUser, [key]: value }));
+    // TODO: send user profile to cloud
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.body}>
-        <Text style={styles.title}>Profile Screen</Text>
-        <View style={styles.list} />
+        <Text style={styles.title}>Profile</Text>
+        {!edit && <Button title="Edit" onPress={() =>{ setEdit(true); console.log(edit)}} />}
+        {edit && <Button title="Finish" onPress={() =>{ setEdit(false); console.log(edit)}} />}
+        {!edit && <View style={styles.list} >
+          <View style={styles.item}>
+            <Text style={styles.label}>Username: </Text>
+            <Text> {user.username} </Text>
+          </View>
+          <View style={styles.item}> 
+            <Text style={styles.label}>Age: </Text>
+            <Text> {user.age} </Text>
+          </View>
+          <View style={styles.item}> 
+            <Text style={styles.label}>Gender: </Text>
+            <Text> {user.gender} </Text>
+          </View>
+          </View>}
+          {edit && <View style={styles.list} >
+          <View style={styles.item}>
+            <Text style={styles.label}>Username: </Text>
+            <Input
+              placeholder='enter username'
+              value={user.username}
+              onChangeText={(value) => handleUserChange('username', value )}
+            />
+          </View>
+          <View style={styles.item}> 
+            <Text style={styles.label}>Age: </Text>
+            <Input
+              placeholder='enter age'
+              value={user.age}
+              onChangeText={(value) => handleUserChange('age', value )}
+            />
+          </View>
+          <View style={styles.item}> 
+            <Text style={styles.label}>Gender: </Text>
+            <Input
+              placeholder='enter gender'
+              value={user.gender}
+              onChangeText={(value) => handleUserChange('gender', value )}
+            />
+          </View>
+          </View>}
         <View style={styles.footer}>
           <Button loading={loading} title="Logout" onPress={handleLogout} />
         </View>
@@ -78,6 +129,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    alignSelf: 'stretch',
   },
   rowBack: {
     marginTop: 10,
@@ -105,4 +157,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'red',
     right: 0,
   },
+  label: {
+    width: 100,
+  }
 });

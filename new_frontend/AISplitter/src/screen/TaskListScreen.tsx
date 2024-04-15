@@ -42,9 +42,25 @@ export default function TaskListScreen() {
 
   useEffect(() => {
     handleRefresh();
+    
   }, [handleRefresh]);
 
   useEffect(() => {
+    // TODO: extract tasklist
+    fetch("http://127.0.0.1:5000/user/list:", { 
+
+          // method: 'GET',
+          headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+            }  
+          }).then(data => {
+            // Log the fetched list to the console
+           console.log(data)
+          }).catch(error => {
+            console.error(error.message)
+          })
+
     if (taskList.length > 0) {
       AsyncStorage.setItem('taskList', JSON.stringify(taskList || []));
     }
@@ -76,6 +92,27 @@ export default function TaskListScreen() {
           }
           onPress={() => handleCheckBoxPress(item)}
         />
+        {/* <Button
+        onPress={()=>fetch("http://127.0.0.1:5000/user/list:", { 
+          method: 'GET',
+          headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+            }  
+          })
+          .then(response => {
+            // Check if the response is successful
+            if (!response.ok) {
+              throw new Error('Network response was not ok');
+            }
+            // Parse the response as JSON
+            return response.json();
+          })
+          .then(data => {
+            // Log the fetched data to the console
+            console.log(data);
+     
+          })}>test</Button> */}
       </View>
     );
   };

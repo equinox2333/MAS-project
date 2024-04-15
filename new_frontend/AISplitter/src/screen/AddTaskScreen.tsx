@@ -31,6 +31,8 @@ interface Props {
   route: Route;
 }
 
+// splitting returned AI generated result
+// return an array of tasks
 function splitTextIntoTasks(text: string): string[] {
   // Split the text into an array, using "Task" as the delimiter
   let tasks = text.split(/Task\s\d+:/).slice(1);
@@ -97,8 +99,10 @@ export default function AddTaskScreen(props: Props) {
     // } catch (error) {
     //   console.error('Error verifying token validity: ', error);
     // }
+    // console.log("task title:", task.title)
+    var url = "http://127.0.0.1:5000/user/generate_study_plan/" + task.title
 
-    fetch('http://127.0.0.1:5000/user/generate_study_plan/run10km', { 
+    fetch(url, { 
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
@@ -118,31 +122,35 @@ export default function AddTaskScreen(props: Props) {
               // slice tasks into array
               var tasks = splitTextIntoTasks(data.study_plan)
               console.log(tasks)
+              alert(data.study_plan);
             })
     } catch (error) {
       console.error('Error verifying token validity: ', error);
     }
-    // const taskListStr = await AsyncStorage.getItem('taskList');
-    // const taskList = JSON.parse(taskListStr || '[]');
-    // let newTaskList = taskList;
-    // if (isEdit) {
-    //   newTaskList = taskList.map((item: TaskItem) => {
-    //     if (item.id === task.id) {
-    //       return task;
-    //     }
-    //     return item;
-    //   });
-    // } else {
-    //   const now = Date.now();
-    //   newTaskList.push({
-    //     id: now,
-    //     createTime: now,
-    //     completed: false,
-    //     ...task,
-    //   });
-    // }
-    // await AsyncStorage.setItem('taskList', JSON.stringify(newTaskList));
+
+    
+    const taskListStr = await AsyncStorage.getItem('taskList');
+    const taskList = JSON.parse(taskListStr || '[]');
+    let newTaskList = taskList;
+    if (isEdit) {
+      newTaskList = taskList.map((item: TaskItem) => {
+        if (item.id === task.id) {
+          return task;
+        }
+        return item;
+      });
+    } else {
+      const now = Date.now();
+      newTaskList.push({
+        id: now,
+        createTime: now,
+        completed: false,
+        ...task,
+      });
+    }
+    await AsyncStorage.setItem('taskList', JSON.stringify(newTaskList));
     // navigation.goBack();
+    navigation.navigate("TaskList")
   };
 
   const styles = StyleSheet.create({
