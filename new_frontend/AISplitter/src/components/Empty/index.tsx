@@ -1,5 +1,5 @@
+import { Icon } from '@ui-kitten/components';
 import { StyleSheet, Text, View } from 'react-native';
-import { Icon } from '@rneui/themed';
 
 import type { ViewStyle } from 'react-native';
 
@@ -16,12 +16,12 @@ const Empty = (props: EmptyProps) => {
   let text: string;
   switch (type) {
     case 'network_error':
-      iconName = 'wifi-off';
-      text = 'Network Error, please try again';
+      iconName = 'wifi-off-outline';
+      text = 'Network error, please check and try again';
       break;
     default:
-      iconName = 'inbox';
-      text = 'No Data';
+      iconName = 'inbox-outline';
+      text = 'No data available';
       break;
   }
 
@@ -32,11 +32,11 @@ const Empty = (props: EmptyProps) => {
         ...style,
       }}
     >
-      <Icon name={iconName} type="feather" size={100} color="#999" />
+      <Icon name={iconName} style={{ width: 100, height: 100 }} fill="#999" />
       <Text style={styles.text}>{text}</Text>
       {onPress && (
         <Text style={styles.button} onPress={onPress}>
-          重新加载
+          Try again
         </Text>
       )}
     </View>

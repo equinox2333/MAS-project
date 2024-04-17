@@ -1,26 +1,18 @@
-import { useState } from 'react';
-import {
-  Keyboard,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  TouchableWithoutFeedback,
-  View,
-} from 'react-native';
-import { Icon } from '@rneui/base';
-import { Button, Input, useTheme } from '@rneui/themed';
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import type { NavigationProp } from '@/types';
+import { Text, Icon, Input } from '@ui-kitten/components';
 
+import Button from '@/components/Button';
+import Layout from '@/components/Layout';
 import { login } from '@/services/user';
 
-import type { NavigationProp } from '@/types';
-
 export default function LoginScreen() {
-  const { theme } = useTheme();
   const navigation = useNavigation<NavigationProp<'Login'>>();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [email, setEmail] = React.useState('test@gmail.com');
+  const [password, setPassword] = React.useState('test123');
+  const [loading, setLoading] = React.useState(false);
 
   const handleRegister = () => {
     navigation.navigate('Register');
@@ -40,69 +32,61 @@ export default function LoginScreen() {
   };
 
   const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      margin: 24,
-    },
     body: {
-      flex: 1,
+      padding: 24,
     },
     title: {
-      fontSize: 28,
-      fontWeight: 'bold',
-      marginTop: 120,
-      marginBottom: 60,
+      marginVertical: 60,
       textAlign: 'center',
     },
+    input: {
+      marginBottom: 24,
+    },
     buttonContainer: {
-      width: '100%',
-      marginTop: 24,
+      width: '90%',
+      alignSelf: 'center',
+      marginTop: 50,
     },
     register: {
       marginTop: 24,
       textAlign: 'center',
     },
-    registerBtn: {
-      color: theme.colors.primary,
-      fontWeight: 'bold',
-    },
   });
 
   return (
-    <SafeAreaView style={styles.container}>
-      <TouchableWithoutFeedback 
-      // onPress={Keyboard.dismiss} 
-      style={styles.body}>
-        <View>
-          <Text style={styles.title}>Login</Text>
-          <Input
-            placeholder="Please input email"
-            leftIcon={<Icon name="mail" size={24} />}
-            value={email}
-            onChangeText={setEmail}
-          />
-          <Input
-            placeholder="Please input password"
-            secureTextEntry
-            value={password}
-            onChangeText={setPassword}
-            leftIcon={<Icon name="lock" size={24} />}
-          />
-          <Button
-            title="Login"
-            loading={loading}
-            containerStyle={styles.buttonContainer}
-            onPress={handleLogin}
-          />
-          <Text style={styles.register}>
-            Don't have an account?{' '}
-            <Text style={styles.registerBtn} onPress={handleRegister}>
-              Register
-            </Text>{' '}
-            here.
-          </Text>
-        </View>
-      </TouchableWithoutFeedback>
-    </SafeAreaView>
+    <Layout style={styles.body}>
+      <View>
+        <Text category="h2" style={styles.title}>
+          Login
+        </Text>
+        <Input
+          label="Email"
+          style={styles.input}
+          placeholder="Please enter your email"
+          accessoryLeft={<Icon name="email-outline" />}
+          value={email}
+          onChangeText={setEmail}
+        />
+        <Input
+          label="Password"
+          style={styles.input}
+          placeholder="Please enter your password"
+          secureTextEntry
+          value={password}
+          onChangeText={setPassword}
+          accessoryLeft={<Icon name="lock-outline" />}
+        />
+        <Button loading={loading} onPress={handleLogin}>
+          Login
+        </Button>
+        <Text style={styles.register}>
+          Don't have an account?{' '}
+          <Text status="primary" category="s1" onPress={handleRegister}>
+            Register
+          </Text>{' '}
+          here.
+        </Text>
+      </View>
+    </Layout>
   );
 }

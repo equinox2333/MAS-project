@@ -8,18 +8,19 @@ export interface TaskItem {
   description: string;
   priority: PriorityEnum;
   createTime: number;
-  startTime: string;
-  dueDate: string;
+  startTime: number;
+  dueDate: number;
   completed: boolean;
   tags: string;
+  subTasks?: TaskItem[];
 }
 
 export type RootStackParamList = {
   Login: undefined;
   Register: undefined;
   Home: undefined;
-  AddTask: { task: TaskItem };
-  TaskList: undefined;
+  AddTask: { task?: TaskItem; indent?: number; parentTask?: TaskItem };
+  Tasks: undefined;
 };
 
 export type NavigationProp<T extends keyof RootStackParamList> = ReactNavigationProp<

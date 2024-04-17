@@ -1,11 +1,17 @@
-import { useState } from 'react';
-import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
-import { Button } from '@rneui/themed';
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
 
 import { logout } from '@/services/user';
+import Button from '@/components/Button';
+import { ThemeContext } from '@/context/ThemeContext';
+import Layout from '@/components/Layout';
+import { Avatar, Icon, Text, TopNavigationAction } from '@ui-kitten/components';
+import { Theme } from '@/constants/theme';
+import { auth } from '@/config/firebase';
 
 export default function ProfileScreen() {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = React.useState(false);
+  const themeContext = React.useContext(ThemeContext);
 
   const handleLogout = async () => {
     try {
@@ -18,91 +24,59 @@ export default function ProfileScreen() {
     }
   };
 
+  const renderRightActions = () => (
+    <TopNavigationAction
+      icon={
+        themeContext.theme === Theme.Dark ? (
+          <Icon name="moon-outline" />
+        ) : (
+          <Icon name="sun-outline" />
+        )
+      }
+      onPress={themeContext.toggleTheme}
+    />
+  );
+
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.body}>
-        <Text style={styles.title}>Profile Screen</Text>
-        <View style={styles.list} />
-        <View style={styles.footer}>
-          <Button loading={loading} title="Logout" onPress={handleLogout} />
+    <Layout>
+      <Layout.Header title="Profile" accessoryRight={renderRightActions} />
+      <Layout.Content>
+        <View style={styles.container}>
+          <Avatar style={styles.avatar} size="giant" source={require('../../assets/avatar.png')} />
+          <Text style={styles.username} category="h5">
+            {auth.currentUser.displayName}
+          </Text>
+          <Text style={styles.email} category="h6">
+            {auth.currentUser.email}
+          </Text>
         </View>
-      </View>
-    </SafeAreaView>
+      </Layout.Content>
+      <Layout.Footer>
+        <Button style={styles.logout} loading={loading} onPress={handleLogout}>
+          Logout
+        </Button>
+      </Layout.Footer>
+    </Layout>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-  },
-  body: {
-    flex: 1,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginVertical: 20,
-  },
-  list: {
-    flexGrow: 1,
-    padding: 20,
-  },
-  footer: {
-    paddingHorizontal: 20,
-  },
-  loading: {
-    marginVertical: 16,
-    fontSize: 16,
-    color: '#999',
-    flexDirection: 'row',
-    justifyContent: 'center',
+    paddingTop: 50,
     alignItems: 'center',
+  },
+  avatar: {
+    width: 100,
+    height: 100,
+  },
+  username: {
+    marginTop: 20,
+  },
+  email: {
+    marginTop: 20,
+  },
+  logout: {
+    width: 200,
     alignSelf: 'center',
-  },
-  loadingText: {
-    marginLeft: 10,
-    color: '#999',
-  },
-  backTextWhite: {
-    color: '#FFF',
-  },
-  rowFront: {
-    backgroundColor: '#fff',
-    height: 50,
-    marginTop: 10,
-  },
-  item: {
-    flex: 1,
-    marginLeft: 5,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  rowBack: {
-    marginTop: 10,
-    height: 50,
-    alignItems: 'center',
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingLeft: 15,
-  },
-  backRightBtn: {
-    alignItems: 'center',
-    bottom: 0,
-    justifyContent: 'center',
-    position: 'absolute',
-    top: 0,
-    height: 50,
-    width: 75,
-  },
-  backRightBtnLeft: {
-    backgroundColor: 'blue',
-    right: 75,
-  },
-  backRightBtnRight: {
-    backgroundColor: 'red',
-    right: 0,
   },
 });

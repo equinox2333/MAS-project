@@ -1,27 +1,19 @@
-import { useState } from 'react';
-import {
-  Keyboard,
-  Text,
-  TouchableWithoutFeedback,
-  View,
-  SafeAreaView,
-  StyleSheet,
-} from 'react-native';
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { Icon } from '@rneui/base';
-import { Button, Input, useTheme } from '@rneui/themed';
+import type { NavigationProp } from '@/types';
+import { Text, Icon, Input } from '@ui-kitten/components';
 
+import Button from '@/components/Button';
+import Layout from '@/components/Layout';
 import { register } from '@/services/user';
 
-import type { NavigationProp } from '@/types';
-
-export default function RegisterScreen() {
-  const { theme } = useTheme();
-  const navigation = useNavigation<NavigationProp<'Register'>>();
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [email, setEmail] = useState('');
-  const [loading, setLoading] = useState(false);
+export default function LoginScreen() {
+  const navigation = useNavigation<NavigationProp<'Login'>>();
+  const [username, setUsername] = React.useState('');
+  const [password, setPassword] = React.useState('');
+  const [email, setEmail] = React.useState('');
+  const [loading, setLoading] = React.useState(false);
 
   const handleLogin = () => {
     navigation.navigate('Login');
@@ -41,72 +33,69 @@ export default function RegisterScreen() {
   };
 
   const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      margin: 24,
-    },
     body: {
-      flex: 1,
+      padding: 24,
     },
     title: {
-      fontSize: 28,
-      fontWeight: 'bold',
-      marginTop: 90,
-      marginBottom: 60,
+      marginVertical: 60,
       textAlign: 'center',
+    },
+    input: {
+      marginBottom: 24,
     },
     buttonContainer: {
-      marginTop: 24,
+      width: '90%',
+      alignSelf: 'center',
+      marginTop: 50,
     },
-    login: {
+    register: {
       marginTop: 24,
       textAlign: 'center',
-    },
-    loginBtn: {
-      color: theme.colors.primary,
-      fontWeight: 'bold',
     },
   });
 
   return (
-    <SafeAreaView style={styles.container}>
-      <TouchableWithoutFeedback style={styles.body}>
-        <View>
-          <Text style={styles.title}>Register</Text>
-          <Input
-            placeholder="Username"
-            leftIcon={<Icon name="person" size={24} />}
-            value={username}
-            onChangeText={setUsername}
-          />
-          <Input
-            placeholder="Email"
-            leftIcon={<Icon name="mail" size={24} />}
-            value={email}
-            onChangeText={setEmail}
-          />
-          <Input
-            placeholder="Password"
-            secureTextEntry
-            value={password}
-            onChangeText={setPassword}
-            leftIcon={<Icon name="lock" size={24} />}
-          />
-          <Button
-            title="Register"
-            loading={loading}
-            containerStyle={styles.buttonContainer}
-            onPress={handleRegister}
-          />
-          <Text style={styles.login}>
-            Already have an account?{' '}
-            <Text style={styles.loginBtn} onPress={handleLogin}>
-              Login
-            </Text>{' '}
-            here.
-          </Text>
-        </View>
-      </TouchableWithoutFeedback>
-    </SafeAreaView>
+    <Layout style={styles.body}>
+      <View>
+        <Text category="h2" style={styles.title}>
+          Register
+        </Text>
+        <Input
+          label="Username"
+          style={styles.input}
+          placeholder="Please enter your username"
+          accessoryLeft={<Icon name="person-outline" />}
+          value={username}
+          onChangeText={setUsername}
+        />
+        <Input
+          label="Email"
+          style={styles.input}
+          placeholder="Please enter your email"
+          accessoryLeft={<Icon name="email-outline" />}
+          value={email}
+          onChangeText={setEmail}
+        />
+        <Input
+          label="Password"
+          style={styles.input}
+          placeholder="Please enter your password"
+          secureTextEntry
+          value={password}
+          onChangeText={setPassword}
+          accessoryLeft={<Icon name="lock-outline" />}
+        />
+        <Button loading={loading} onPress={handleLogin}>
+          Register
+        </Button>
+        <Text style={styles.register}>
+          Already have an account?{' '}
+          <Text status="primary" category="s1" onPress={handleLogin}>
+            Login
+          </Text>{' '}
+          here.
+        </Text>
+      </View>
+    </Layout>
   );
 }
