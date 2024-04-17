@@ -47,7 +47,7 @@ export default function TaskListScreen() {
 
   useEffect(() => {
     // TODO: extract tasklist
-    fetch("http://127.0.0.1:5000/user/list:", { 
+    fetch("http://127.0.0.1:5000/user/list", { 
 
           // method: 'GET',
           headers: {
