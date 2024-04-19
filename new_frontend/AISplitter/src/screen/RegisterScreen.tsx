@@ -29,6 +29,7 @@ export default function LoginScreen() {
       console.error(errorCode, errorMessage);
     } finally {
       setLoading(false);
+      handleLogin();
     }
   };
 
@@ -85,7 +86,7 @@ export default function LoginScreen() {
           onChangeText={setPassword}
           accessoryLeft={<Icon name="lock-outline" />}
         />
-        <Button loading={loading} onPress={handleLogin}>
+        <Button loading={loading} onPress={handleRegister}>
           Register
         </Button>
         <Text style={styles.register}>

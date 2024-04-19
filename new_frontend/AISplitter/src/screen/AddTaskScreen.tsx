@@ -56,7 +56,41 @@ export default function AddTaskScreen(props: Props) {
       }
       setTaskList(newList);
     }
-    navigation.goBack();
+    try {
+      // TODO: display output
+      // console.log(task.description)
+      // TODO: fetch
+      var url = "https://nikitacrispe01.pythonanywhere.com/generate_study_plan/" + task.title +","+task.description
+
+      fetch(url, { 
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+              }  
+            })
+            .then(response => {
+              // Check if the response is successful
+              // console.log("response\n",response)
+              if (!response.ok) {
+                throw new Error('Network response was not ok');
+              }
+              // Parse the response as JSON
+              return response.json();
+            })
+            .then(data => {
+              // Log the fetched data to the console
+              console.log(data);
+              // slice tasks into array
+              
+            })
+
+    } catch (error) {
+      console.log(error)
+    } finally {
+      navigation.goBack();
+    }
+    
+    
   };
 
   const styles = StyleSheet.create({
