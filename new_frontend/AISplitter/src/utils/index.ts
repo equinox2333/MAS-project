@@ -1,3 +1,4 @@
+import { updateTask } from '@/services/todo';
 import type { TaskItem } from '@/types';
 
 export const sortTasksByStartTime = (node: TaskItem) => {
@@ -41,24 +42,28 @@ export const mergeIntoTree = (arr: TaskItem[]): TaskItem[] => {
   return tree;
 };
 
-// 递归找它的子节点，修改成与父节点一样的状态
-export const updateSubTasks = (tasks: TaskItem[], id: string, completed: boolean) => {
-  tasks?.map((task) => {
+export const getAllSubTasks = (tasks: TaskItem[], id: string, completed: boolean) => {
+  let result: TaskItem[] = [];
+  for (const task of tasks) {
     if (task.parentId === id) {
-      task.completed = completed;
-      updateSubTasks(tasks, task.id, completed);
+      result.push({ ...task, completed });
+      result = result.concat(getAllSubTasks(tasks, task.id, completed));
     }
-  });
+  }
+  return result;
 };
 
-// 递归找到修改所有父节点的数据，如果子节点都完成了，父节点也完成
-export const updateParentTask = (tasks: TaskItem[], parentId: string) => {
+export const getAllParentTasks = (tasks: TaskItem[], parentId: string) => {
+  let result: TaskItem[] = [];
   if (parentId) {
     const parentTask = tasks.find((item) => item.id === parentId);
     const subList = tasks.filter((item) => item.parentId === parentId);
     if (subList.length > 0) {
-      parentTask.completed = subList.every((item) => item.completed);
+      result.push({ ...parentTask, completed: subList.every((item) => item.completed) });
     }
-    updateParentTask(tasks, parentTask.parentId);
+    if (parentTask) {
+      result = result.concat(getAllParentTasks(tasks, parentTask.parentId));
+    }
   }
+  return result;
 };

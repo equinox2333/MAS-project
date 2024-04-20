@@ -2,7 +2,7 @@ import type { NavigationProp as ReactNavigationProp } from '@react-navigation/na
 import type { PriorityEnum } from '@/constants';
 
 export interface TaskItem {
-  parentId?: string;
+  parentId: string | null;
   id: string;
   title: string;
   description: string;

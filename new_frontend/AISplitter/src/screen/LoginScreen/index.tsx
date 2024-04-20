@@ -1,18 +1,21 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import type { NavigationProp } from '@/types';
 import { Text, Icon, Input } from '@ui-kitten/components';
+import type { NavigationProp } from '@/types';
 
 import Button from '@/components/Button';
 import Layout from '@/components/Layout';
 import { login } from '@/services/user';
+
+import useStyles from './styles';
 
 export default function LoginScreen() {
   const navigation = useNavigation<NavigationProp<'Login'>>();
   const [email, setEmail] = React.useState('test@gmail.com');
   const [password, setPassword] = React.useState('test123');
   const [loading, setLoading] = React.useState(false);
+  const styles = useStyles();
 
   const handleRegister = () => {
     navigation.navigate('Register');
@@ -30,28 +33,6 @@ export default function LoginScreen() {
       setLoading(false);
     }
   };
-
-  const styles = StyleSheet.create({
-    body: {
-      padding: 24,
-    },
-    title: {
-      marginVertical: 60,
-      textAlign: 'center',
-    },
-    input: {
-      marginBottom: 24,
-    },
-    buttonContainer: {
-      width: '90%',
-      alignSelf: 'center',
-      marginTop: 50,
-    },
-    register: {
-      marginTop: 24,
-      textAlign: 'center',
-    },
-  });
 
   return (
     <Layout style={styles.body}>

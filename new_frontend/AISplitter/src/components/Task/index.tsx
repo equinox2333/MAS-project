@@ -1,91 +1,49 @@
 import React from 'react';
 import dayjs from 'dayjs';
-import { StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
+import {
+  DeviceEventEmitter,
+  Text,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native';
+import Toast from 'react-native-toast-message';
 import { SwipeRow } from 'react-native-swipe-list-view';
 import { useNavigation } from '@react-navigation/native';
 import { CheckBox, Icon, useTheme } from '@ui-kitten/components';
 
 import { Priority } from '@/components/Priority';
-import { useLocalStorage } from '@/hooks/useLocalStorage';
-import { updateParentTask, updateSubTasks } from '@/utils';
+import { getAllParentTasks, getAllSubTasks } from '@/utils';
 import type { NavigationProp, TaskItem } from '@/types';
+import { EventKey } from '@/constants/event';
+import { deleteTasks, updateTasksCompleted } from '@/services/todo';
+import { useLocalStorage } from '@/hooks/useLocalStorage';
+
+import useStyles from './styles';
 
 export interface TaskProps {
   data: TaskItem;
+  tasks: TaskItem[];
   indent: number;
 }
 
+const HEIGHT = 60;
+
 export default function Task(props: TaskProps) {
-  const { data, indent } = props;
+  const { data, tasks, indent } = props;
   const theme = useTheme();
-  const [taskList, setTaskList] = useLocalStorage<TaskItem[]>('taskList', {
-    defaultValue: [],
-  });
   const { id, title, startTime, priority, completed, subTasks, parentId } = data;
   const navigation = useNavigation<NavigationProp<'Tasks'>>();
-  const [expanded, setExpanded] = React.useState(false);
+  const [expanded, setExpanded] = useLocalStorage(id, {
+    defaultValue: false,
+  });
   const rowRef = React.useRef<any>();
 
-  const styles = StyleSheet.create({
-    container: {
-      marginTop: indent > 0 ? 0 : 10,
-    },
-    backTextWhite: {
-      color: '#fff',
-    },
-    rowFront: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      paddingLeft: indent * 24 + 12,
-      backgroundColor: theme['background-basic-color-2'],
-    },
-    item: {
-      alignItems: 'center',
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-    },
-    extra: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      marginTop: 5,
-      gap: 8,
-    },
-    right: {
-      width: 40,
-      height: 60,
-      marginRight: 20,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    rowBack: {
-      height: 60,
-      alignItems: 'center',
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      paddingLeft: 15,
-    },
-    backRightBtn: {
-      alignItems: 'center',
-      justifyContent: 'center',
-      position: 'absolute',
-      top: 0,
-      bottom: 0,
-      height: 60,
-      width: 75,
-    },
-    backRightBtnLeft: {
-      backgroundColor: theme['color-info-500'],
-      right: 75,
-    },
-    backRightBtnRight: {
-      backgroundColor: theme['color-danger-500'],
-      right: 0,
-    },
-    icon: {
-      width: 20,
-      height: 20,
-    },
-  });
+  const styles = useStyles({ indent, height: HEIGHT });
+
+  const refresh = () => {
+    DeviceEventEmitter.emit(EventKey.RefreshTaskList);
+  };
 
   const closeRow = () => {
     if (rowRef.current) {
@@ -93,21 +51,43 @@ export default function Task(props: TaskProps) {
     }
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     closeRow();
-    const newList = taskList.filter((task) => task.id !== id && task.parentId !== id);
-    updateParentTask(newList, parentId);
-    setTaskList(newList);
+    Toast.show({
+      type: 'success',
+      text1: 'Loading...',
+      autoHide: false,
+    });
+
+    // 删除当前数据和它的子任务
+    let deleteList = [data];
+    deleteList = deleteList.concat(getAllSubTasks(tasks, id, !completed));
+
+    // 删除以后需要更新父任务的状态
+    const parentTasks = getAllParentTasks(tasks, parentId);
+
+    await Promise.all([deleteTasks(deleteList), updateTasksCompleted(parentTasks)]);
+    refresh();
   };
 
-  const handleCompleted = () => {
-    closeRow();
-    const newList = [...taskList];
-    // 修改当前节点的状态
-    newList.find((task) => task.id === id).completed = !completed;
-    updateSubTasks(newList, id, !completed);
-    updateParentTask(newList, parentId);
-    setTaskList(newList);
+  const handleCompleted = async () => {
+    try {
+      Toast.show({
+        type: 'success',
+        text1: 'Loading...',
+        autoHide: false,
+      });
+      closeRow();
+      const currTask = { ...data, completed: !completed };
+      const index = tasks.findIndex((item) => item.id === id);
+      tasks.splice(index, 1, currTask);
+      const subTasks = getAllSubTasks(tasks, id, !completed);
+      const parentTasks = getAllParentTasks(tasks, parentId);
+      await updateTasksCompleted([].concat(currTask).concat(subTasks).concat(parentTasks));
+      refresh();
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleEdit = () => {
@@ -150,14 +130,17 @@ export default function Task(props: TaskProps) {
               />
             ) : null}
           </View>
-          <CheckBox style={{ height: 50, flex: 1 }} checked={completed} onChange={handleCompleted}>
+          <CheckBox
+            style={{ height: HEIGHT, flex: 1 }}
+            checked={completed}
+            onChange={handleCompleted}
+          >
             <View style={styles.item}>
               <View>
                 <Text
-                  style={[
-                    completed ? { textDecorationLine: 'line-through' } : null,
-                    { lineHeight: 22, color: theme['text-basic-color'] },
-                  ]}
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                  style={[completed ? styles.completed : null, styles.taskTitle]}
                 >
                   {title}
                 </Text>
@@ -187,7 +170,9 @@ export default function Task(props: TaskProps) {
       </SwipeRow>
       <View>
         {expanded
-          ? subTasks?.map((subTask) => <Task key={subTask.id} data={subTask} indent={indent + 1} />)
+          ? subTasks?.map((subTask) => (
+              <Task key={subTask.id} tasks={tasks} data={subTask} indent={indent + 1} />
+            ))
           : null}
       </View>
     </>

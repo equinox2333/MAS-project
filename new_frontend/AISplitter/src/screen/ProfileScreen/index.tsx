@@ -1,17 +1,20 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
-
-import { logout } from '@/services/user';
-import Button from '@/components/Button';
-import { ThemeContext } from '@/context/ThemeContext';
-import Layout from '@/components/Layout';
+import { View } from 'react-native';
 import { Avatar, Icon, Text, TopNavigationAction } from '@ui-kitten/components';
+
+import Button from '@/components/Button';
+import Layout from '@/components/Layout';
+import { ThemeContext } from '@/context/ThemeContext';
 import { Theme } from '@/constants/theme';
 import { auth } from '@/config/firebase';
+import { logout } from '@/services/user';
+
+import useStyles from './styles';
 
 export default function ProfileScreen() {
   const [loading, setLoading] = React.useState(false);
   const themeContext = React.useContext(ThemeContext);
+  const styles = useStyles();
 
   const handleLogout = async () => {
     try {
@@ -42,7 +45,11 @@ export default function ProfileScreen() {
       <Layout.Header title="Profile" accessoryRight={renderRightActions} />
       <Layout.Content>
         <View style={styles.container}>
-          <Avatar style={styles.avatar} size="giant" source={require('../../assets/avatar.png')} />
+          <Avatar
+            style={styles.avatar}
+            size="giant"
+            source={require('../../../assets/avatar.png')}
+          />
           <Text style={styles.username} category="h5">
             {auth.currentUser.displayName}
           </Text>
@@ -59,24 +66,3 @@ export default function ProfileScreen() {
     </Layout>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    paddingTop: 50,
-    alignItems: 'center',
-  },
-  avatar: {
-    width: 100,
-    height: 100,
-  },
-  username: {
-    marginTop: 20,
-  },
-  email: {
-    marginTop: 20,
-  },
-  logout: {
-    width: 200,
-    alignSelf: 'center',
-  },
-});

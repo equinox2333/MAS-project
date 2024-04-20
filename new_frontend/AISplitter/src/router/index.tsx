@@ -1,4 +1,5 @@
 import React from 'react';
+import { View } from 'react-native';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Spinner, useTheme } from '@ui-kitten/components';
@@ -14,7 +15,6 @@ import AddTaskScreen from '@/screen/AddTaskScreen';
 import HomeScreen from '@/screen/HomeScreen';
 import LoginScreen from '@/screen/LoginScreen';
 import RegisterScreen from '@/screen/RegisterScreen';
-import { View } from 'react-native';
 
 const Stack = createNativeStackNavigator();
 

@@ -8,12 +8,13 @@ import { addDoc, collection } from 'firebase/firestore';
 
 import { auth, db } from '@/config/firebase';
 
+import { DB } from '@/constants/db';
 import type { LoginParams, RegisterParams } from '@/types/user';
 
 export async function register(params: RegisterParams) {
   const { email, password, username } = params;
   const { user } = await createUserWithEmailAndPassword(auth, email, password);
-  await addDoc(collection(db, 'users'), {
+  await addDoc(collection(db, DB.USERS), {
     uid: user.uid,
     email,
     password,
