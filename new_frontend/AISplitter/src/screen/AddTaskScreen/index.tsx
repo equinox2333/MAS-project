@@ -67,9 +67,11 @@ export default function AddTaskScreen(props: Props) {
     try {
       setLoading(true);
       const id = Date.now().toString();
+      // update created task
       if (isEdit) {
         await updateTask(task);
-      } else {
+        console.log("edit\n",task);
+      } else { // create new task
         await createTask({
           parentId: parentTask?.id || null,
           ...task,
@@ -78,6 +80,60 @@ export default function AddTaskScreen(props: Props) {
         if (parentTask?.id) {
           const parentTasks = getAllParentTasks(taskList, parentTask.id);
           await updateTasksCompleted(parentTasks);
+        }
+        console.log("create\n",task);
+        // console.log("parenttask\n",parentTask);
+
+        // generate sub tasks
+        // fetch("https://nikitacrispe01.pythonanywhere.com/generate_study_stuff", {
+        //   method: 'POST', 
+        //   headers: {
+        //       'Content-Type': 'application/json',
+        //       'Accept': 'application/json',
+        //     } ,
+        //     body: JSON.stringify({'title':task.title,
+        //                            'description': task.description }) 
+        //   })
+        //   .then(response => {
+        //     // Check if the response is successful
+        //     if (!response.ok) {
+        //       throw new Error('Network response was not ok');
+        //     }
+        //     // Parse the response as JSON
+        //     return response.json();
+        //   })
+        //   .then(data => {
+        //     // Log the fetched data to the console
+        //     console.log(data);
+        //     // TODO:based on the returned result, generate subtasks and append them
+        //     async () => {
+        //       await createTask({
+        //       parentId: id,
+        //       ...task,
+        //       title:"subtitle",
+        //       id:"test",
+        //     })
+        //     const parentTasks2 = getAllParentTasks(taskList, "test");
+        //     // await updateTasksCompleted(parentTasks);
+        //     console.log(parentTasks2)
+        //     }
+            
+        //     console.log("finish");
+            
+        //   })
+
+        async () => {
+
+          console.log( createTask({
+          parentId: id,
+          ...task,
+          title:"subtitle",
+          id:"test",
+        })
+          )
+        const parentTasks2 = getAllParentTasks(taskList, "test");
+        // await updateTasksCompleted(parentTasks);
+        console.log(parentTasks2)
         }
       }
       navigation.goBack();
