@@ -29,7 +29,6 @@ export default function TasksScreen() {
     getTasks().then((data) => {
       setTaskList(data);
       Toast.hide();
-      // console.log("all tasks\n",data)
     });
   }, []);
 
