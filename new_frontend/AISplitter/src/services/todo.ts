@@ -29,13 +29,26 @@ export async function getTasks(): Promise<TaskItem[]> {
   return list;
 }
 
-export async function createTask(task: TaskItem): Promise<void> {
+// export async function createTask(task: TaskItem): Promise<void> {
+//   try {
+//     await addDoc(collection(db, DB.TASKS), {
+//       ...task,
+//       parentId: task.parentId || null,
+//       userId: auth.currentUser.uid,
+//     });
+//   } catch (error) {
+//     console.error(error.message);
+//   }
+// }
+export async function createTask(task: TaskItem): Promise<string> {
   try {
-    await addDoc(collection(db, DB.TASKS), {
+    const docRef = await addDoc(collection(db, DB.TASKS), {
       ...task,
       parentId: task.parentId || null,
       userId: auth.currentUser.uid,
+      // id: task.id
     });
+    return docRef.id
   } catch (error) {
     console.error(error.message);
   }

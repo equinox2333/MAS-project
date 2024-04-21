@@ -70,9 +70,10 @@ export default function AddTaskScreen(props: Props) {
       // update created task
       if (isEdit) {
         await updateTask(task);
-        console.log("edit\n",task);
+        // console.log("edit\n",task);
       } else { // create new task
-        await createTask({
+        // get the id of created task
+        var cur_id = await createTask({
           parentId: parentTask?.id || null,
           ...task,
           id,
@@ -81,62 +82,46 @@ export default function AddTaskScreen(props: Props) {
           const parentTasks = getAllParentTasks(taskList, parentTask.id);
           await updateTasksCompleted(parentTasks);
         }
-        console.log("create\n",task);
+        // console.log("create\n",task);
         // console.log("parenttask\n",parentTask);
-
+        // console.log("task id\n",c);
+        // await console.log("this task id\n",cur_id)
         // generate sub tasks
-        // fetch("https://nikitacrispe01.pythonanywhere.com/generate_study_stuff", {
-        //   method: 'POST', 
-        //   headers: {
-        //       'Content-Type': 'application/json',
-        //       'Accept': 'application/json',
-        //     } ,
-        //     body: JSON.stringify({'title':task.title,
-        //                            'description': task.description }) 
-        //   })
-        //   .then(response => {
-        //     // Check if the response is successful
-        //     if (!response.ok) {
-        //       throw new Error('Network response was not ok');
-        //     }
-        //     // Parse the response as JSON
-        //     return response.json();
-        //   })
-        //   .then(data => {
-        //     // Log the fetched data to the console
-        //     console.log(data);
-        //     // TODO:based on the returned result, generate subtasks and append them
-        //     async () => {
-        //       await createTask({
-        //       parentId: id,
-        //       ...task,
-        //       title:"subtitle",
-        //       id:"test",
-        //     })
-        //     const parentTasks2 = getAllParentTasks(taskList, "test");
-        //     // await updateTasksCompleted(parentTasks);
-        //     console.log(parentTasks2)
-        //     }
+        await fetch("https://nikitacrispe01.pythonanywhere.com/generate_study_stuff", {
+          method: 'POST', 
+          headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+            } ,
+            body: JSON.stringify({'title':task.title,
+                                   'description': task.description }) 
+          })
+          .then(response => {
+            // Check if the response is successful
+            if (!response.ok) {
+              throw new Error('Network response was not ok');
+            }
+            // Parse the response as JSON
+            return response.json();
+          })
+          .then(async data => {
+            // Log the fetched data to the console
+            console.log(data);
+            // TODO:based on the returned result, generate subtasks and append them
+            const nextid =await createTask({
+              
+              ...task,
+              parentId: cur_id,
+              id,
+            });
+            console.log("sub task\n",nextid)
             
-        //     console.log("finish");
-            
-        //   })
+          })
 
-        async () => {
 
-          console.log( createTask({
-          parentId: id,
-          ...task,
-          title:"subtitle",
-          id:"test",
-        })
-          )
-        const parentTasks2 = getAllParentTasks(taskList, "test");
-        // await updateTasksCompleted(parentTasks);
-        console.log(parentTasks2)
-        }
+        
       }
-      navigation.goBack();
+      // await navigation.goBack();
     } catch (error) {
       Toast.show({
         type: 'error',
@@ -144,6 +129,7 @@ export default function AddTaskScreen(props: Props) {
         text2: error.message,
       });
     } finally {
+      navigation.goBack();
       refresh();
       setLoading(false);
     }
