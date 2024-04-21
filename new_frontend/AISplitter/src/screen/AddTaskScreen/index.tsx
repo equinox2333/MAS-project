@@ -106,17 +106,31 @@ export default function AddTaskScreen(props: Props) {
           })
           .then(async data => {
             // Log the fetched data to the console
-            console.log(data);
+            // console.log(data);
+            // console.log(data.tasks);
             // TODO:based on the returned result, generate subtasks and append them
-            const nextid =await createTask({
-              
-              ...task,
+            var all_subtask = await data.tasks;
+            console.log(all_subtask[0]);
+            await createTask({
+              ...all_subtask[0],
               parentId: cur_id,
               id,
             });
-            console.log("sub task\n",nextid)
+            // await all_subtask.foreach(async function(subtask) {
+            //   console.log(subtask)
+            //   try {createTask({
+            //       ...task,
+            //       parentId: cur_id,
+            //       id,
+            //     });
+            //   } catch(error) {
+            //     console.log(error);
+            //   }
+
+            })
+            // console.log("sub task\n",nextid)
             
-          })
+          // })
 
 
         
